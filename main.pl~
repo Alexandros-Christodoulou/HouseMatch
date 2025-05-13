@@ -1,74 +1,210 @@
-% main.pl
-% Ονόματα και ΑΕΜ:
-% ΑΕΜ1 - Όνομα1
-% ΑΕΜ2 - Όνομα2
-% (Προσθέστε όσους χρειάζεται)
+% -------------------------------
+% Ξ¦ΞΏΞΉΟ„Ξ·Ο„Ξ­Ο‚: [Ξ’Ξ‘Ξ›Ξ• ΞΞΞΞΞ‘Ξ¤Ξ‘ & Ξ‘Ξ•Ξ]
+% ΞΞ¬ΞΈΞ·ΞΌΞ±: Ξ¥Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΟ„ΞΉΞΊΞ® Ξ›ΞΏΞ³ΞΉΞΊΞ® & Ξ›ΞΏΞ³ΞΉΞΊΟΟ‚ Ξ ΟΞΏΞ³ΟΞ±ΞΌΞΌΞ±Ο„ΞΉΟƒΞΌΟΟ‚
+% Ξ‘ΟΟ‡ΞµΞ―ΞΏ: main.pl
+% Ξ ΞµΟΞΉΞ³ΟΞ±Ο†Ξ®: Ξ ΟΟΞ³ΟΞ±ΞΌΞΌΞ± ΞµΟ€ΞΉΞ»ΞΏΞ³Ξ®Ο‚ Ξ΄ΞΉΞ±ΞΌΞµΟΞ―ΟƒΞΌΞ±Ο„ΞΏΟ‚
+% -------------------------------
 
+% Ξ¦ΟΟΟ„Ο‰ΟƒΞ· Ξ΄ΞµΞ΄ΞΏΞΌΞ­Ξ½Ο‰Ξ½
 :- consult('houses.pl').
 :- consult('requests.pl').
-:- consult('compatibility.pl').
-% Εκκίνηση του συστήματος
+
+% Ξ•ΞΊΞΊΞ―Ξ½Ξ·ΟƒΞ· Ο€ΟΞΏΞ³ΟΞ¬ΞΌΞΌΞ±Ο„ΞΏΟ‚
 run :-
     repeat,
-    nl,
-    write('Μενού:'), nl,
-    write('======'), nl,
-    write('1 - Προτιμήσεις ενός πελάτη'), nl,
-    write('2 - Μαζικές προτιμήσεις πελατών'), nl,
-    write('3 - Επιλογή πελατών μέσω δημοπρασίας'), nl,
-    write('0 - Έξοδος'), nl,
-    nl,
-    write('Επιλογή: '),
+    nl, writeln('ΞΞµΞ½ΞΏΟ:'),
+    writeln('======'),
+    writeln('1 - Ξ ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚ ΞµΞ½ΟΟ‚ Ο€ΞµΞ»Ξ¬Ο„Ξ·'),
+    writeln('2 - ΞΞ±Ξ¶ΞΉΞΊΞ­Ο‚ Ο€ΟΞΏΟ„ΞΉΞΌΞ®ΟƒΞµΞΉΟ‚ Ο€ΞµΞ»Ξ±Ο„ΟΞ½'),
+    writeln('3 - Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® Ο€ΞµΞ»Ξ±Ο„ΟΞ½ ΞΌΞ­ΟƒΟ‰ Ξ΄Ξ·ΞΌΞΏΟ€ΟΞ±ΟƒΞ―Ξ±Ο‚'),
+    writeln('0 - ΞΞΎΞΏΞ΄ΞΏΟ‚'),
+    write('Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ®: '),
     read(Choice),
     handle_choice(Choice),
-    Choice == 0, !.  % Τερματισμός όταν η επιλογή είναι 0
+    Choice == 0, !.
 
-% Διαχείριση επιλογών μενού
+% Ξ§ΞµΞΉΟΞΉΟƒΞΌΟΟ‚ ΞµΟ€ΞΉΞ»ΞΏΞ³ΟΞ½ ΞΌΞµΞ½ΞΏΟ
 handle_choice(1) :-
-    writeln('--- Διαδραστική λειτουργία πελάτη ---'), nl,
-    get_user_requirements(Reqs),
-    nl, writeln('Συμβατά σπίτια:'),
-    house(Address, Rooms, Floor, Area, Rent, Garden, Elevator, Center, Pets),
-    compatible_house(Reqs, house(Address, Rooms, Floor, Area, Rent, Garden, Elevator, Center, Pets)),
-    format("- ~w (~w€)~n", [Address, Rent]),
-    fail.
-
+    writeln('--- Ξ”ΞΉΞ±Ξ΄ΟΞ±ΟƒΟ„ΞΉΞΊΞ® Ξ»ΞµΞΉΟ„ΞΏΟ…ΟΞ³Ξ―Ξ± Ο€ΞµΞ»Ξ¬Ο„Ξ· ---'),
+    interactive_mode, !.
 
 handle_choice(2) :-
-    % Θα συμπληρωθεί αργότερα με batch mode
-    writeln('--- Μαζικές προτιμήσεις πελατών ---'), nl,
-    fail.
+    writeln('--- ΞΞ±Ξ¶ΞΉΞΊΞ® Ξ»ΞµΞΉΟ„ΞΏΟ…ΟΞ³Ξ―Ξ± Ο€ΞµΞ»Ξ±Ο„ΟΞ½ ---'),
+    batch_mode, !.
 
 handle_choice(3) :-
-    % Θα συμπληρωθεί αργότερα με λειτουργία δημοπρασίας
-    writeln('--- Επιλογή μέσω δημοπρασίας ---'), nl,
-    fail.
+    writeln('--- Ξ›ΞµΞΉΟ„ΞΏΟ…ΟΞ³Ξ―Ξ± Ξ΄Ξ·ΞΌΞΏΟ€ΟΞ±ΟƒΞ―Ξ±Ο‚ ---'),
+    auction_mode, !.
 
 handle_choice(0) :-
-    writeln('Έξοδος από το σύστημα.'), nl.
+    writeln('ΞΞΎΞΏΞ΄ΞΏΟ‚ Ξ±Ο€Ο Ο„ΞΏ Ο€ΟΟΞ³ΟΞ±ΞΌΞΌΞ±...'), !.
 
 handle_choice(_) :-
-    writeln('Επίλεξε έναν αριθμό μεταξύ 0 έως 3!'), nl,
-    fail.
-% Δομή απαιτήσεων χρήστη:
-% requirements(
-%   MinArea, MinRooms, PetsAllowed, ElevatorFloor,
-%   MaxRent, CenterRent, SuburbRent, ExtraPerSqM, ExtraGardenPerSqM, MaxFinalRent
-% ).
+    writeln('Ξ•Ο€Ξ―Ξ»ΞµΞΎΞµ Ξ­Ξ½Ξ±Ξ½ Ξ±ΟΞΉΞΈΞΌΟ ΞΌΞµΟ„Ξ±ΞΎΟ 0 Ξ­Ο‰Ο‚ 3!'), nl.
 
+% ================================
+% Ξ”ΞΉΞ±Ξ΄ΟΞ±ΟƒΟ„ΞΉΞΊΞ® Ξ»ΞµΞΉΟ„ΞΏΟ…ΟΞ³Ξ―Ξ± Ο€ΞµΞ»Ξ¬Ο„Ξ·
+% ================================
+interactive_mode :-
+    get_user_requirements(Reqs),
+    findall(
+        house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent),
+        (
+            house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent),
+            compatible_house(Reqs, house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent))
+        ),
+        SuitableHouses
+    ),
+    (
+        SuitableHouses = [] ->
+            writeln(' '),writeln('Ξ”ΞµΞ½ Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ ΞΊΞ±Ο„Ξ¬Ξ»Ξ»Ξ·Ξ»ΞΏ ΟƒΟ€Ξ―Ο„ΞΉ!')
+        ;
+            print_suitable_houses(SuitableHouses),
+            find_best_house(SuitableHouses, Best),
+            (
+                Best \= none ->
+                    format('Ξ ΟΞΏΟ„ΞµΞ―Ξ½ΞµΟ„Ξ±ΞΉ Ξ· ΞµΞ½ΞΏΞΉΞΊΞ―Ξ±ΟƒΞ· Ο„ΞΏΟ… Ξ΄ΞΉΞ±ΞΌΞµΟΞ―ΟƒΞΌΞ±Ο„ΞΏΟ‚ ΟƒΟ„Ξ·Ξ½ Ξ΄ΞΉΞµΟΞΈΟ…Ξ½ΟƒΞ·: ~w~n', [Best])
+                ;
+                    true
+            )
+    ).
+
+
+% Ξ•Ξ―ΟƒΞΏΞ΄ΞΏΟ‚ Ξ±Ο€Ξ±ΞΉΟ„Ξ®ΟƒΞµΟ‰Ξ½ Ξ±Ο€Ο Ο‡ΟΞ®ΟƒΟ„Ξ·
 get_user_requirements(Reqs) :-
-    writeln('Δώσε τις παρακάτω πληροφορίες:'),
+    writeln('Ξ”ΟΟƒΞµ Ο„ΞΉΟ‚ Ο€Ξ±ΟΞ±ΞΊΞ¬Ο„Ο‰ Ο€Ξ»Ξ·ΟΞΏΟ†ΞΏΟΞ―ΞµΟ‚:'),
     writeln('=============================='),
+    write('Ξ•Ξ»Ξ¬Ο‡ΞΉΟƒΟ„ΞΏ Ξ•ΞΌΞ²Ξ±Ξ΄ΟΞ½: |: '), read(MinArea),
+    write('Ξ•Ξ»Ξ¬Ο‡ΞΉΟƒΟ„ΞΏΟ‚ Ξ±ΟΞΉΞΈΞΌΟΟ‚ Ο…Ο€Ξ½ΞΏΞ΄Ο‰ΞΌΞ±Ο„Ξ―Ο‰Ξ½: |: '), read(MinRooms),
+    write('ΞΞ± ΞµΟ€ΞΉΟ„ΟΞ­Ο€ΞΏΞ½Ο„Ξ±ΞΉ ΞΊΞ±Ο„ΞΏΞΉΞΊΞ―Ξ΄ΞΉΞ±; (yes/no) |: '), read(Pets),
+    write('Ξ‘Ο€Ο Ο€ΞΏΞΉΞΏΞ½ ΟΟΞΏΟ†ΞΏ ΞΊΞ±ΞΉ Ο€Ξ¬Ξ½Ο‰ Ξ½Ξ± Ο…Ο€Ξ¬ΟΟ‡ΞµΞΉ Ξ±Ξ½ΞµΞ»ΞΊΟ…ΟƒΟ„Ξ®ΟΞ±Ο‚; |: '), read(FloorLimit),
+    write('Ξ ΞΏΞΉΞΏ ΞµΞ―Ξ½Ξ±ΞΉ Ο„ΞΏ ΞΌΞ­Ξ³ΞΉΟƒΟ„ΞΏ ΞµΞ½ΞΏΞ―ΞΊΞΉΞΏ Ο€ΞΏΟ… ΞΌΟ€ΞΏΟΞµΞ―Ο‚ Ξ½Ξ± Ο€Ξ»Ξ·ΟΟΟƒΞµΞΉΟ‚; |: '), read(MaxTotal),
+    write('Ξ ΟΟƒΞ± ΞΈΞ± Ξ­Ξ΄ΞΉΞ½ΞµΟ‚ Ξ³ΞΉΞ± Ξ­Ξ½Ξ± Ξ΄ΞΉΞ±ΞΌΞ­ΟΞΉΟƒΞΌΞ± ΟƒΟ„ΞΏ ΞΊΞ­Ξ½Ο„ΟΞΏ Ο„Ξ·Ο‚ Ο€ΟΞ»Ξ·Ο‚ (ΟƒΟ„Ξ± ΞµΞ»Ξ¬Ο‡ΞΉΟƒΟ„Ξ± Ο„ΞµΟ„ΟΞ±Ξ³Ο‰Ξ½ΞΉΞΊΞ¬); |: '), read(MaxCenter),
+    write('Ξ ΟΟƒΞ± ΞΈΞ± Ξ­Ξ΄ΞΉΞ½ΞµΟ‚ Ξ³ΞΉΞ± Ξ­Ξ½Ξ± Ξ΄ΞΉΞ±ΞΌΞ­ΟΞΉΟƒΞΌΞ± ΟƒΟ„Ξ± Ο€ΟΞΏΞ¬ΟƒΟ„ΞΉΞ± Ο„Ξ·Ο‚ Ο€ΟΞ»Ξ·Ο‚ (ΟƒΟ„Ξ± ΞµΞ»Ξ¬Ο‡ΞΉΟƒΟ„Ξ± Ο„ΞµΟ„ΟΞ±Ξ³Ο‰Ξ½ΞΉΞΊΞ¬); |: '), read(MaxSuburb),
+    write('Ξ ΟΟƒΞ± ΞΈΞ± Ξ­Ξ΄ΞΉΞ½ΞµΟ‚ Ξ³ΞΉΞ± ΞΊΞ¬ΞΈΞµ Ο„ΞµΟ„ΟΞ±Ξ³Ο‰Ξ½ΞΉΞΊΟ Ξ΄ΞΉΞ±ΞΌΞµΟΞ―ΟƒΞΌΞ±Ο„ΞΏΟ‚ Ο€Ξ¬Ξ½Ο‰ Ξ±Ο€Ο Ο„ΞΏ ΞµΞ»Ξ¬Ο‡ΞΉΟƒΟ„ΞΏ; |: '), read(ExtraAreaPrice),
+    write('Ξ ΟΟƒΞ± ΞΈΞ± Ξ­Ξ΄ΞΉΞ½ΞµΟ‚ Ξ³ΞΉΞ± ΞΊΞ¬ΞΈΞµ Ο„ΞµΟ„ΟΞ±Ξ³Ο‰Ξ½ΞΉΞΊΟ ΞΊΞ®Ο€ΞΏΟ…; |: '), read(GardenPrice),
+    Reqs = requirements(MinArea, MinRooms, Pets, FloorLimit, MaxTotal, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice, MaxTotal).
 
-    write('Ελάχιστο Εμβαδόν:  '), read(MinArea),
-    write('Ελάχιστος αριθμός υπνοδωματίων:  '), read(MinRooms),
-    write('Να επιτρέπονται κατοικίδια; (yes/no)  '), read(Pets),
-    write('Από ποιον όροφο και πάνω να υπάρχει ανελκυστήρας;  '), read(ElevFloor),
-    write('Ποιο είναι το μέγιστο ενοίκιο που μπορείς να πληρώσεις;  '), read(MaxRent),
-    write('Πόσα θα έδινες για ένα διαμέρισμα στο κέντρο της πόλης (στα ελάχιστα τετραγωνικά);  '), read(CenterRent),
-    write('Πόσα θα έδινες για ένα διαμέρισμα στα προάστια της πόλης (στα ελάχιστα τετραγωνικά);  '), read(SuburbRent),
-    write('Πόσα θα έδινες για κάθε τετραγωνικό διαμερίσματος πάνω από το ελάχιστο;  '), read(ExtraSqm),
-    write('Πόσα θα έδινες για κάθε τετραγωνικό κήπου;  '), read(ExtraGarden),
-    write('Ποιο είναι το ανώτατο ποσό που μπορείς να δώσεις συνολικά;  '), read(MaxFinal),
+% Ξ•ΞΊΟ„ΟΟ€Ο‰ΟƒΞ· ΟƒΟ…ΞΌΞ²Ξ±Ο„ΟΞ½ ΟƒΟ€ΞΉΟ„ΞΉΟΞ½
 
-    Reqs = requirements(MinArea, MinRooms, Pets, ElevFloor, MaxRent, CenterRent, SuburbRent, ExtraSqm, ExtraGarden, MaxFinal).
+print_suitable_houses([house(Address, Rooms, Area, Center, Floor, _, Pets, Garden, Rent)|Rest]) :-
+    format('ΞΞ±Ο„Ξ¬Ξ»Ξ»Ξ·Ξ»ΞΏ ΟƒΟ€Ξ―Ο„ΞΉ ΟƒΟ„Ξ·Ξ½ Ξ΄ΞΉΞµΟΞΈΟ…Ξ½ΟƒΞ·: ~w~n', [Address]),
+    format('Ξ¥Ο€Ξ½ΞΏΞ΄Ο‰ΞΌΞ¬Ο„ΞΉΞ±: ~d~n', [Rooms]),
+    format('Ξ•ΞΌΞ²Ξ±Ξ΄ΟΞ½: ~d~n', [Area]),
+    format('Ξ•ΞΌΞ²Ξ±Ξ΄ΟΞ½ ΞΊΞ®Ο€ΞΏΟ…: ~d~n', [Garden]),
+    format('Ξ•Ξ―Ξ½Ξ±ΞΉ ΟƒΟ„ΞΏ ΞΊΞ­Ξ½Ο„ΟΞΏ Ο„Ξ·Ο‚ Ο€ΟΞ»Ξ·Ο‚: ~w~n', [Center]),
+    format('Ξ•Ο€ΞΉΟ„ΟΞ­Ο€ΞΏΞ½Ο„Ξ±ΞΉ ΞΊΞ±Ο„ΞΏΞΉΞΊΞ―Ξ΄ΞΉΞ±: ~w~n', [Pets]),
+    format('ΞΟΞΏΟ†ΞΏΟ‚: ~d~n', [Floor]),
+    format('Ξ•Ξ½ΞΏΞ―ΞΊΞΉΞΏ: ~d~n~n', [Rent]),
+    print_suitable_houses(Rest).
+
+print_suitable_houses([]) :-
+    writeln(' ').
+
+
+% ================================
+% Ξ•Ο€ΞΉΞ»ΞΏΞ³Ξ® & ΟƒΟ…ΞΌΞ²Ξ±Ο„ΟΟ„Ξ·Ο„Ξ± ΟƒΟ€ΞΉΟ„ΞΉΞΏΟ
+% ================================
+
+compatible_house(
+    requirements(MinArea, MinRooms, Pets, FloorLimit, _, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice, MaxAllowed),
+    house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent)
+) :-
+    Area >= MinArea,
+    Rooms >= MinRooms,
+    (Pets == yes -> PetsAllowed == yes ; true),
+    (Floor >= FloorLimit -> Elevator == yes ; true),
+    offer(requirements(MinArea, MinRooms, Pets, FloorLimit, _, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice, MaxAllowed),
+          house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent),
+          Offer),
+    Rent =< Offer.
+
+% Ξ¥Ο€ΞΏΞ»ΞΏΞ³ΞΉΟƒΞΌΟΟ‚ Ο€ΟΞΏΟƒΟ†ΞΏΟΞ¬Ο‚ Ο€ΞµΞ»Ξ¬Ο„Ξ·
+offer(requirements(MinArea, _, _, _, _, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice, MaxAllowed),
+      house(_, _, Area, Center, _, _, _, Garden, _),
+      Offer) :-
+
+    (Center == yes -> Base is MaxCenter ; Base is MaxSuburb),
+    ExtraArea is max(0, Area - MinArea),
+    ExtraAreaCost is ExtraArea * ExtraAreaPrice,
+    GardenCost is Garden * GardenPrice,
+    OfferTemp is Base + ExtraAreaCost + GardenCost,
+    Offer is min(OfferTemp, MaxAllowed).
+
+% Ξ ΟΞΏΟ„ΞµΞ―Ξ½ΞµΞΉ Ο„ΞΏ ΞΊΞ±Ξ»ΟΟ„ΞµΟΞΏ ΟƒΟ€Ξ―Ο„ΞΉ Ξ±Ο€Ο Ο„Ξ· Ξ»Ξ―ΟƒΟ„Ξ±
+find_best_house(Houses, BestAddress) :-
+    find_cheaper(Houses, Cheapest),
+    find_biggest_garden(Cheapest, GardenBiggest),
+    find_biggest_house(GardenBiggest, [house(BestAddress, _, _, _, _, _, _, _, _)]).
+
+find_cheaper(Houses, Cheapest) :-
+    findall(R, (member(house(_, _, _, _, _, _, _, _, R), Houses)), Rents),
+    min_list(Rents, MinRent),
+    include(
+        [house(_, _, _, _, _, _, _, _, Rent)] >> (Rent =:= MinRent),
+        Houses,
+        Cheapest
+    ).
+
+find_biggest_garden(Houses, Biggest) :-
+    findall(G, (member(house(_, _, _, _, _, _, _, G, _), Houses)), Gardens),
+    max_list(Gardens, MaxGarden),
+    include(
+        [house(_, _, _, _, _, _, _, G, _)] >> (G =:= MaxGarden),
+        Houses,
+        Biggest
+    ).
+
+find_biggest_house(Houses, Biggest) :-
+    findall(A, (member(house(_, _, A, _, _, _, _, _, _), Houses)), Areas),
+    max_list(Areas, MaxArea),
+    include(
+        [house(_, _, A, _, _, _, _, _, _)] >> (A =:= MaxArea),
+        Houses,
+        Biggest
+    ).
+
+
+% ================================
+% Ξ¥Ο€ΟΞ»ΞΏΞΉΟ€Ξ± ΞΊΞ±Ο„Ξ·Ξ³ΞΏΟΞ®ΞΌΞ±Ο„Ξ± ΞΈΞ± Ο…Ξ»ΞΏΟ€ΞΏΞΉΞ·ΞΈΞΏΟΞ½ ΟƒΟ„Ξ± ΞµΟ€ΟΞΌΞµΞ½Ξ± Ξ²Ξ®ΞΌΞ±Ο„Ξ±
+% ================================
+
+batch_mode :-
+    writeln('[Ξ¥Ο€Ο ΞΊΞ±Ο„Ξ±ΟƒΞΊΞµΟ…Ξ®]').
+
+auction_mode :-
+    writeln('[Ξ¥Ο€Ο ΞΊΞ±Ο„Ξ±ΟƒΞΊΞµΟ…Ξ®]').
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
