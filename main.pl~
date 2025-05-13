@@ -18,7 +18,7 @@ run :-
     writeln('2 - Μαζικές προτιμήσεις πελατών'),
     writeln('3 - Επιλογή πελατών μέσω δημοπρασίας'),
     writeln('0 - Έξοδος'),
-    write('Επιλογή: '),
+    write('Επιλογή:'),
     read(Choice),
     handle_choice(Choice),
     Choice == 0, !.
@@ -200,7 +200,7 @@ batch_mode :-
             ),
             (
                 SuitableHouses = [] ->
-                    writeln('Δεν υπάρχει κατάλληλο σπίτι!~n')
+                    writeln('Δεν υπάρχει κατάλληλο σπίτι!')
                 ;
                     print_suitable_houses(SuitableHouses),
                     find_best_house(SuitableHouses, Best),
@@ -215,14 +215,143 @@ batch_mode :-
     ).
 
 
+
+find_houses(Results) :-
+    findall(
+        result(Name, SuitableHouses, BestAddress),
+        (
+            request(Name, MinArea, MinRooms, Pets, FloorLimit, MaxTotal, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice),
+            request_to_requirements(
+                request(Name, MinArea, MinRooms, Pets, FloorLimit, MaxTotal, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice),
+                Reqs
+            ),
+            findall(
+                house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent),
+                (
+                    house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent),
+                    compatible_house(Reqs, house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent))
+                ),
+                SuitableHouses
+            ),
+            (SuitableHouses = [] ->
+                BestAddress = none
+            ;
+                find_best_house(SuitableHouses, BestAddress)
+            )
+        ),
+        Results
+    ).
+
+
+find_bidders(HouseResults, BiddersList) :-
+    findall(
+        Address,
+        (
+            member(result(_, _, Address), HouseResults),
+            Address \= none
+        ),
+        AddressesWithDuplicates
+    ),
+    sort(AddressesWithDuplicates, UniqueAddresses),
+    findall(
+        bidders(Address, Names),
+        (
+            member(Address, UniqueAddresses),
+            findall(
+                Name,
+                member(result(Name, _, Address), HouseResults),
+                Names
+            )
+        ),
+        BiddersList
+    ).
+
+
+get_request_by_name(Name, Req) :-
+    request(Name, MinArea, MinRooms, Pets, FloorLimit, MaxTotal, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice),
+    Req = requirements(MinArea, MinRooms, Pets, FloorLimit, MaxTotal, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice, MaxTotal).
+
+find_best_bidders(BiddersList, Winners) :-
+    findall(
+        winner(Address, BestName),
+        (
+            member(bidders(Address, Names), BiddersList),
+            findall(
+                offer(Name, Amount),
+                (
+                    member(Name, Names),
+                    get_request_by_name(Name, Reqs),
+                    house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent),
+                    offer(Reqs, house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent), Amount)
+                ),
+                Offers
+            ),
+            max_offer(Offers, BestName)
+        ),
+        Winners
+    ).
+
+max_offer([offer(Name, _)], Name).
+max_offer([offer(Name1, Amount1), offer(Name2, Amount2) | Rest], BestName) :-
+    (Amount1 >= Amount2 ->
+        max_offer([offer(Name1, Amount1) | Rest], BestName)
+    ;
+        max_offer([offer(Name2, Amount2) | Rest], BestName)
+    ).
+
+remove_houses(Results, Winners, UpdatedResults) :-
+    findall(
+        result(Name, NewSuitable, NewBest),
+        (
+            member(result(Name, Suitable, _), Results),
+            (
+                member(winner(WonAddress, Name), Winners) ->
+                    % Ο πελάτης είναι νικητής, κρατά μόνο το σπίτι που του ανατέθηκε
+                    include([H]>>(H = house(WonAddress,_,_,_,_,_,_,_,_)), Suitable, Filtered),
+                    NewSuitable = Filtered,
+                    NewBest = WonAddress
+                ;
+                    % Δεν είναι νικητής – αφαιρεί από τη λίστα του όσα σπίτια έχουν ανατεθεί αλλού
+                    findall(WonA, member(winner(WonA, _), Winners), WonAddresses),
+                    exclude([H]>>(H = house(Address,_,_,_,_,_,_,_,_), member(Address, WonAddresses)), Suitable, NewSuitable),
+                    (NewSuitable = [] -> NewBest = none ; find_best_house(NewSuitable, NewBest))
+            )
+        ),
+        UpdatedResults
+    ).
+
+refine_houses(InitialResults, FinalResults) :-
+    refine_loop(InitialResults, FinalResults).
+
+refine_loop(CurrentResults, FinalResults) :-
+    find_bidders(CurrentResults, Bidders),
+    has_conflict(Bidders),  % αν υπάρχουν συγκρούσεις
+    find_best_bidders(Bidders, Winners),
+    remove_houses(CurrentResults, Winners, NewResults),
+    refine_loop(NewResults, FinalResults).  % επαναληπτικά
+
+refine_loop(CurrentResults, CurrentResults).  % τερματισμός: χωρίς συγκρούσεις
+
+has_conflict(Bidders) :-
+    member(bidders(_, Names), Bidders),
+    length(Names, L),
+    L > 1,
+    !.
+
+
 auction_mode :-
-    writeln('[Υπό κατασκευή]').
-
-
-
-
-
-
+    find_houses(H),
+    refine_houses(H, Final),
+    forall(
+        member(result(Name, _, Best), Final),
+        (
+            (Best == none ->
+                format('O πελάτης ~w δεν θα νοικιάσει κάποιο διαμέρισμα!~n', [Name])
+            ;
+                format('O πελάτης ~w θα νοικιάσει το διαμέρισμα στην διεύθυνση: ~w~n', [Name, Best])
+            )
+        )
+    ).
 
 
 
