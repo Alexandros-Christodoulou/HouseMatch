@@ -18,7 +18,7 @@ run :-
     writeln('2 - Μαζικές προτιμήσεις πελατών'),
     writeln('3 - Επιλογή πελατών μέσω δημοπρασίας'),
     writeln('0 - Έξοδος'),
-    write('Επιλογή: '),
+    write('Επιλογή:'),
     read(Choice),
     handle_choice(Choice),
     Choice == 0, !.
@@ -30,7 +30,9 @@ handle_choice(1) :-
     interactive_mode, !.
 
 handle_choice(2) :-
+    writeln(' '),
     writeln('--- Μαζική λειτουργία πελατών ---'),
+    writeln(' '),
     batch_mode, !.
 
 handle_choice(3) :-
@@ -172,9 +174,46 @@ find_biggest_house(Houses, Biggest) :-
 % ================================
 % Υπόλοιπα κατηγορήματα θα υλοποιηθούν στα επόμενα βήματα
 % ================================
+% Μετατροπή request/10 σε requirements/10
+request_to_requirements(
+    request(_, MinArea, MinRooms, Pets, FloorLimit, MaxTotal, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice),
+    requirements(MinArea, MinRooms, Pets, FloorLimit, MaxTotal, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice, MaxTotal)
+).
+
 
 batch_mode :-
-    writeln('[Υπό κατασκευή]').
+    forall(
+        request(Name, MinArea, MinRooms, Pets, FloorLimit, MaxTotal, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice),
+        (
+            format('Κατάλληλα διαμερίσματα για τον πελάτη: ~w:~n', [Name]),writeln('======================================='),
+            request_to_requirements(
+                request(Name, MinArea, MinRooms, Pets, FloorLimit, MaxTotal, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice),
+                Reqs
+            ),
+            findall(
+                house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent),
+                (
+                    house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent),
+                    compatible_house(Reqs, house(Address, Rooms, Area, Center, Floor, Elevator, PetsAllowed, Garden, Rent))
+                ),
+                SuitableHouses
+            ),
+            (
+                SuitableHouses = [] ->
+                    writeln('Δεν υπάρχει κατάλληλο σπίτι!')
+                ;
+                    print_suitable_houses(SuitableHouses),
+                    find_best_house(SuitableHouses, Best),
+                    (
+                        Best \= none ->
+                            format('Προτείνεται η ενοικίαση του διαμερίσματος στην διεύθυνση: ~w~n~n', [Best])
+                        ;
+                            true
+                    )
+            )
+        )
+    ).
+
 
 auction_mode :-
     writeln('[Υπό κατασκευή]').
