@@ -44,7 +44,7 @@ handle_choice(3) :-
 
 handle_choice(0) :-
     writeln(' '),
-    writeln('Έξοδος από το πρόγραμμα...'), !.
+    !.
 
 handle_choice(_) :-
     writeln(' '),
@@ -92,7 +92,7 @@ get_user_requirements(Reqs) :-
     write('Πόσα θα έδινες για ένα διαμέρισμα στα προάστια της πόλης (στα ελάχιστα τετραγωνικά); '), read(MaxSuburb),
     write('Πόσα θα έδινες για κάθε τετραγωνικό διαμερίσματος πάνω από το ελάχιστο; '), read(ExtraAreaPrice),
     write('Πόσα θα έδινες για κάθε τετραγωνικό κήπου; '), read(GardenPrice),
-    Reqs = requirements(MinArea, MinRooms, Pets, FloorLimit, MaxTotal, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice, MaxTotal).
+    Reqs = requirements(MinArea, MinRooms, Pets, FloorLimit, MaxTotal, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice, MaxTotal),writeln(' ').
 
 % Εκτύπωση συμβατών σπιτιών
 

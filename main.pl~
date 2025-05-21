@@ -27,6 +27,7 @@ run :-
 handle_choice(1) :-
     writeln(' '),
     writeln('--- Διαδραστική λειτουργία πελάτη ---'),
+    writeln(' '),
     interactive_mode, !.
 
 handle_choice(2) :-
@@ -38,6 +39,7 @@ handle_choice(2) :-
 handle_choice(3) :-
     writeln(' '),
     writeln('--- Λειτουργία δημοπρασίας ---'),
+    writeln(' '),
     auction_mode, !.
 
 handle_choice(0) :-
@@ -46,7 +48,8 @@ handle_choice(0) :-
 
 handle_choice(_) :-
     writeln(' '),
-    writeln('Επίλεξε έναν αριθμό μεταξύ 0 έως 3!'), nl.
+    writeln('Επίλεξε έναν αριθμό μεταξύ 0 έως 3!'), nl,
+    writeln(' ').
 
 % ================================
 % Διαδραστική λειτουργία πελάτη
@@ -82,12 +85,12 @@ get_user_requirements(Reqs) :-
     writeln('=============================='),
     write('Ελάχιστο Εμβαδόν '), read(MinArea),
     write('Ελάχιστος αριθμός υπνοδωματίων  '), read(MinRooms),
-    write('Να επιτρέπονται κατοικίδια; (yes/no) |: '), read(Pets),
+    write('Να επιτρέπονται κατοικίδια; (yes/no) '), read(Pets),
     write('Από ποιον όροφο και πάνω να υπάρχει ανελκυστήρας; '), read(FloorLimit),
     write('Ποιο είναι το μέγιστο ενοίκιο που μπορείς να πληρώσεις; '), read(MaxTotal),
     write('Πόσα θα έδινες για ένα διαμέρισμα στο κέντρο της πόλης (στα ελάχιστα τετραγωνικά); '), read(MaxCenter),
     write('Πόσα θα έδινες για ένα διαμέρισμα στα προάστια της πόλης (στα ελάχιστα τετραγωνικά); '), read(MaxSuburb),
-    write('Πόσα θα έδινες για κάθε τετραγωνικό διαμερίσματος πάνω από το ελάχιστο; |: '), read(ExtraAreaPrice),
+    write('Πόσα θα έδινες για κάθε τετραγωνικό διαμερίσματος πάνω από το ελάχιστο; '), read(ExtraAreaPrice),
     write('Πόσα θα έδινες για κάθε τετραγωνικό κήπου; '), read(GardenPrice),
     Reqs = requirements(MinArea, MinRooms, Pets, FloorLimit, MaxTotal, MaxCenter, MaxSuburb, ExtraAreaPrice, GardenPrice, MaxTotal).
 
